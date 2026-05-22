@@ -60,3 +60,23 @@ class F1TENTH_POLYRACE_CONFIG(RslRlRunConfig):
     agent_setup = AgentSetup(
         entry_point="rsl_rl_cfg_entry_point"
     )
+
+
+@configclass
+class F1TENTH_POLYDRIFT_CONFIG(RslRlRunConfig):
+    """F1Tenth drifting around a real polyline track (tracks/data/<TRACK>)."""
+    env_setup = EnvSetup(
+        num_envs=1024,
+        task_name="Isaac-F1TenthPolyDriftRL-v0"
+    )
+    train = RLTrainConfig(
+        num_iterations=5000,
+        rl_algo_lib="rsl",
+        rl_algo_class="ppo",
+        log=LogConfig(
+            video_interval=15000
+        ),
+    )
+    agent_setup = AgentSetup(
+        entry_point="rsl_rl_cfg_entry_point"
+    )

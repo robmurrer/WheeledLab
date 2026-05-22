@@ -71,6 +71,7 @@ gym.register(
 from .racing import (
     F1TenthRaceRLEnvCfg, F1TenthRacePlayEnvCfg,
     F1TenthPolyRaceRLEnvCfg, F1TenthPolyRacePlayEnvCfg,
+    F1TenthPolyDriftRLEnvCfg, F1TenthPolyDriftPlayEnvCfg,
 )
 
 gym.register(
@@ -92,5 +93,16 @@ gym.register(
         "env_cfg_entry_point": F1TenthPolyRaceRLEnvCfg,
         "rsl_rl_cfg_entry_point": f"{f1tenth_drift_agents.__name__}.rsl_rl_ppo_cfg:F1TenthPPORunnerCfg",
         "play_env_cfg_entry_point": F1TenthPolyRacePlayEnvCfg,
+    }
+)
+
+gym.register(
+    id="Isaac-F1TenthPolyDriftRL-v0",
+    entry_point='isaaclab.envs:ManagerBasedRLEnv',
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": F1TenthPolyDriftRLEnvCfg,
+        "rsl_rl_cfg_entry_point": f"{f1tenth_drift_agents.__name__}.rsl_rl_ppo_cfg:F1TenthPPORunnerCfg",
+        "play_env_cfg_entry_point": F1TenthPolyDriftPlayEnvCfg,
     }
 )

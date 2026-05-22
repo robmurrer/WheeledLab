@@ -1,2 +1,3 @@
 from .f1tenth_race_env_cfg import F1TenthRaceRLEnvCfg, F1TenthRacePlayEnvCfg
 from .f1tenth_polytrack_env_cfg import F1TenthPolyRaceRLEnvCfg, F1TenthPolyRacePlayEnvCfg
+from .f1tenth_polydrift_env_cfg import F1TenthPolyDriftRLEnvCfg, F1TenthPolyDriftPlayEnvCfg
