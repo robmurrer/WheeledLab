@@ -46,7 +46,7 @@ import torch
 from tqdm import tqdm
 from rsl_rl.runners import OnPolicyRunner
 
-from isaaclab.utils.io import load_pickle
+from wheeledlab_rl.utils.pickle_io import load_pickle  # isaaclab>=2.1 dropped it
 from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_tasks.utils.hydra import hydra_task_config
 from isaaclab.envs import ManagerBasedRLEnvCfg

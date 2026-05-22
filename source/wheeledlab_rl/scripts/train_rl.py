@@ -16,7 +16,8 @@ import gymnasium as gym
 import os
 
 from isaaclab.utils.dict import print_dict
-from isaaclab.utils.io import dump_yaml, dump_pickle
+from isaaclab.utils.io import dump_yaml
+from wheeledlab_rl.utils.pickle_io import dump_pickle  # isaaclab>=2.1 dropped it
 from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper
 

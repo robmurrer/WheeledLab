@@ -32,6 +32,19 @@ class OnPolicyRunner(runners.OnPolicyRunner):
         # self.pbar = tqdm(total=self.cfg.get("rl_max_iterations", 0))
 
     def learn(self, num_learning_iterations, init_at_random_ep_len=False):
+        # rsl-rl 3.x compatibility shim: WheeledLab's hand-rolled rollout loop
+        # below targets the rsl-rl 2.x API and breaks on the installed 3.1.2
+        # (get_observations()/step()/act()/normalizer signatures all changed).
+        # The stock OnPolicyRunner.learn() speaks the 3.x API, so delegate to
+        # it. wandb is off here, so fall back to tensorboard logging (stock
+        # learn() asserts on a None logger_type).
+        if getattr(self, "logger_type", None) is None:
+            self.logger_type = "tensorboard"
+        return super().learn(
+            num_learning_iterations,
+            init_at_random_ep_len=init_at_random_ep_len,
+        )
+        # --- original WheeledLab 2.x rollout loop below is now unreachable ---
         # initialize writer
         if not self.no_log and self.logger_type == "wandb":
             from rsl_rl.utils.wandb_utils import WandbSummaryWriter
