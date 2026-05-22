@@ -20,3 +20,23 @@ class F1TENTH_DRIFT_CONFIG(RslRlRunConfig):
     agent_setup = AgentSetup(
         entry_point="rsl_rl_cfg_entry_point"
     )
+
+
+@configclass
+class F1TENTH_RACE_CONFIG(RslRlRunConfig):
+    """Our F1Tenth racing task on the WheeledLab framework (fast clean laps)."""
+    env_setup = EnvSetup(
+        num_envs=1024,
+        task_name="Isaac-F1TenthRaceRL-v0"
+    )
+    train = RLTrainConfig(
+        num_iterations=5000,
+        rl_algo_lib="rsl",
+        rl_algo_class="ppo",
+        log=LogConfig(
+            video_interval=15000
+        ),
+    )
+    agent_setup = AgentSetup(
+        entry_point="rsl_rl_cfg_entry_point"
+    )

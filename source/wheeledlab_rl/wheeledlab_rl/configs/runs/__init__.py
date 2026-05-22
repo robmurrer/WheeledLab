@@ -8,3 +8,4 @@ register_run_to_hydra("RSS_ELEV_CONFIG", RSS_ELEV_CONFIG)
 register_run_to_hydra("RSS_VISUAL_CONFIG", RSS_VISUAL_CONFIG)
 
 register_run_to_hydra("F1TENTH_DRIFT_CONFIG", F1TENTH_DRIFT_CONFIG)
+register_run_to_hydra("F1TENTH_RACE_CONFIG", F1TENTH_RACE_CONFIG)

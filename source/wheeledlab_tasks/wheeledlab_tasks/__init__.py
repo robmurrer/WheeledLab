@@ -61,3 +61,22 @@ gym.register(
         "rsl_rl_cfg_entry_point": f"{f1tenth_drift_agents.__name__}.rsl_rl_ppo_cfg:F1TenthPPORunnerCfg",
     }
 )
+
+#######################################
+############ RACING ENVS ##############
+#######################################
+# "Our" racing task on the WheeledLab framework (see racing/). Reuses the
+# F1Tenth asset + scene + DR + PPO agent from the drift task; racing reward.
+
+from .racing import F1TenthRaceRLEnvCfg, F1TenthRacePlayEnvCfg
+
+gym.register(
+    id="Isaac-F1TenthRaceRL-v0",
+    entry_point='isaaclab.envs:ManagerBasedRLEnv',
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": F1TenthRaceRLEnvCfg,
+        "rsl_rl_cfg_entry_point": f"{f1tenth_drift_agents.__name__}.rsl_rl_ppo_cfg:F1TenthPPORunnerCfg",
+        "play_env_cfg_entry_point": F1TenthRacePlayEnvCfg,
+    }
+)
