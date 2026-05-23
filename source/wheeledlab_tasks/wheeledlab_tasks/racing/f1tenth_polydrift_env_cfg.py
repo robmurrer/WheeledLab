@@ -86,10 +86,11 @@ class PolyDriftCurriculumCfg:
 @configclass
 class PolyDriftTerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
-    # Wider margin than racing — drifting needs room to slide.
+    # Wider margin than racing — drifting needs room to slide. [Stage E: 0.6->0.9
+    # to give the higher-speed (4.5 m/s) drift more room before terminating.]
     out_of_bounds = DoneTerm(
         func=polytrack.off_track,
-        params={"track_name": TRACK, "margin": 0.6},
+        params={"track_name": TRACK, "margin": 0.9},
     )
 
 
@@ -110,6 +111,10 @@ class F1TenthPolyDriftRLEnvCfg(F1TenthPolyRaceRLEnvCfg):
     def __post_init__(self):
         super().__post_init__()
         self.episode_length_s = 20
+        # [Stage E] Drift needs more speed than clean racing: at 3 m/s side-slip
+        # stayed ~0.02 (barely sliding). Push to 4.5 m/s so the rear can break
+        # traction and actually drift the real track.
+        self.actions.throttle_steer.scale = (4.5, 0.488)
 
 
 @configclass
