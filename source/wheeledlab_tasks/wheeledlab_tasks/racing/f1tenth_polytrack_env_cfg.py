@@ -28,6 +28,12 @@ from . import polytrack
 # Which track to race. Any dir under goat_racer tracks/data/ works.
 TRACK = "Oval"
 
+# Top speed for polyline racing. Lower than the analytic-oval racing (5.0):
+# real tracks (Oval ~6 m-radius corners, ~2 m wide) can't be held at 5 m/s
+# (lateral accel exceeds tire grip -> car always leaves the track and the
+# policy collapses, out_of_bounds ~1.0). 3 m/s is feasible. [autopilot tuned]
+POLY_MAX_SPEED = 3.0
+
 
 ######################
 ###### REWARDS #######
@@ -41,11 +47,11 @@ class PolyTrackRewardsCfg:
     # Forward progress along the centerline (Δ arc length) — the core reward.
     progress = RewTerm(func=polytrack.arc_progress, weight=50.0, params={"track_name": TRACK})
 
-    # Reward speed up to the racing target.
-    speed = RewTerm(func=polytrack.forward_speed, weight=2.0, params={"target": RACE_MAX_SPEED})
+    # Reward speed up to the (feasible) racing target.
+    speed = RewTerm(func=polytrack.forward_speed, weight=2.0, params={"target": POLY_MAX_SPEED})
 
-    # Penalty: stay near the centerline / racing line.
-    cross_track = RewTerm(func=polytrack.cross_track, weight=-8.0, params={"track_name": TRACK})
+    # Penalty: stay near the centerline / racing line (stiffened).
+    cross_track = RewTerm(func=polytrack.cross_track, weight=-12.0, params={"track_name": TRACK})
 
     # Heavy penalty for leaving the track.
     term_pens = RewTerm(
@@ -65,7 +71,7 @@ class PolyTrackTerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
     out_of_bounds = DoneTerm(
         func=polytrack.off_track,
-        params={"track_name": TRACK, "margin": 0.3},
+        params={"track_name": TRACK, "margin": 0.6},
     )
 
 
@@ -108,7 +114,7 @@ class F1TenthPolyRaceRLEnvCfg(F1TenthRaceRLEnvCfg):
         super().__post_init__()
         # Longer episodes — a real lap is longer than the small oval.
         self.episode_length_s = 20
-        self.actions.throttle_steer.scale = (RACE_MAX_SPEED, 0.488)
+        self.actions.throttle_steer.scale = (POLY_MAX_SPEED, 0.488)
 
 
 @configclass
