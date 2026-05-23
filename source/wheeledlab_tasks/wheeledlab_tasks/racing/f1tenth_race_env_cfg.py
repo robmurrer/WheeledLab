@@ -49,8 +49,10 @@ class F1TenthRaceRewardsCfg:
     """Racing rewards: lap progress + speed + clean line. No drift reward."""
 
     # Core: rate of progress around the oval (car yaw rate ≈ orbital rate on a
-    # track centered at the origin). Rewards lapping faster.
-    progress = RewTerm(func=track_progress_rate, weight=60.0)
+    # track centered at the origin). Rewards lapping faster. [Stage E-b: 60->25
+    # — the original 60 was progress-dominated (out_of_bounds ~0.97, fast but
+    # flew off corners); lower it for cleaner laps.]
+    progress = RewTerm(func=track_progress_rate, weight=25.0)
 
     # Soft speed target: vel_dist = (speed - target)^2 + offset; with a negative
     # weight this rewards being near RACE_MAX_SPEED (peaks at the target).
@@ -68,9 +70,10 @@ class F1TenthRaceRewardsCfg:
     )
 
     # Penalty: stay on the racing line (distance from the centerline radius).
+    # [Stage E-b: -40 -> -60 to weight staying on the line more vs. raw progress.]
     cross_track = RewTerm(
         func=cross_track_dist,
-        weight=-40.0,
+        weight=-60.0,
         params={"straight": STRAIGHT, "track_radius": LINE_RADIUS, "p": 1, "offset": -1.0},
     )
 
