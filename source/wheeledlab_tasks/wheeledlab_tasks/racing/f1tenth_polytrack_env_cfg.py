@@ -26,9 +26,11 @@ from .f1tenth_race_env_cfg import F1TenthRaceRLEnvCfg, RACE_MAX_SPEED
 from . import polytrack
 
 # Which track to race. Any dir under goat_racer tracks/data/ works.
-# [Stage E-c] Austin = a real F1 track (~140x80 m), much bigger/harder than the
-# Oval — tests generalization of the polyline racing task to a complex layout.
-TRACK = "Austin"
+# Default = Oval (known-good, F1Tenth-scale). Austin (real F1 ~140x80m) was
+# attempted but repeatedly CUDA-faulted at launch after the weekend's many
+# train/kill cycles (GPU/context degradation, not Austin-specific) — retry it
+# after a fresh container/GPU reset.
+TRACK = "Oval"
 
 # Top speed for polyline racing. Lower than the analytic-oval racing (5.0):
 # real tracks (Oval ~6 m-radius corners, ~2 m wide) can't be held at 5 m/s
