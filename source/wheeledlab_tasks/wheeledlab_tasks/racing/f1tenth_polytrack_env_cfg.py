@@ -39,11 +39,11 @@ def _track_usd_path(track_name: str) -> str:
     return os.path.join(base, track_name, "track.usd")
 
 # Which track to race. Any dir under goat_racer tracks/data/ works.
-# Default = Oval (known-good, F1Tenth-scale). Austin (real F1 ~140x80m) was
-# attempted but repeatedly CUDA-faulted at launch after the weekend's many
-# train/kill cycles (GPU/context degradation, not Austin-specific) — retry it
-# after a fresh container/GPU reset.
-TRACK = "Oval"
+# [Night autopilot] Switching to Austin (real F1 ~140x80m) to test zero-shot
+# drift transfer and to start an overnight Austin polydrift training. The
+# weekend's CUDA faults on Austin were post-restart-related; container has
+# been restarted clean.
+TRACK = "Austin"
 
 # Top speed for polyline racing. Lower than the analytic-oval racing (5.0):
 # real tracks (Oval ~6 m-radius corners, ~2 m wide) can't be held at 5 m/s
