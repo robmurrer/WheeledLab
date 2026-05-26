@@ -149,12 +149,11 @@ class F1TenthPolyRaceRLEnvCfg(F1TenthRaceRLEnvCfg):
         # Longer episodes — a real lap is longer than the small oval.
         self.episode_length_s = 20
         self.actions.throttle_steer.scale = (POLY_MAX_SPEED, 0.488)
-        # Replace the bare-plane scene with one that includes the visual track
-        # mesh (so the user can SEE the track during playback). Physics still
-        # comes from the centerline tensors in polytrack.py.
-        self.scene = F1TenthPolyTrackSceneCfg(
-            num_envs=self.num_envs, env_spacing=self.env_spacing,
-        )
+        # NOTE: visual track mesh (F1TenthPolyTrackSceneCfg + track.usd) was
+        # tried and hung Isaac Sim during scene creation — reverted. The policy
+        # still follows the real polyline correctly (math via polytrack.py),
+        # but the scene visually is a flat plane. TODO: render the centerline
+        # procedurally as VisualizationMarkers (no USD load).
 
 
 @configclass
