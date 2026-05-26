@@ -67,8 +67,14 @@ if FROM_RUN: # Load paths for run folder
     task = run_cfg.env_setup.task_name if args_cli.task is None else args_cli.task
     agent_entry_point = None
 
-    # Get policy path
-    chkpt = args_cli.checkpoint if args_cli.checkpoint is not None else ".*"
+    # Get policy path. isaaclab.utils.parse_cfg.get_checkpoint_path expects a
+    # REGEX STRING for `checkpoint`, but --checkpoint is type=int. Convert it
+    # to a regex matching the actual file name. (Fix for isaaclab>=2.3 — the
+    # original WheeledLab passes the int directly which crashes in re.match.)
+    if args_cli.checkpoint is not None:
+        chkpt = rf"model_{args_cli.checkpoint}\.pt$"
+    else:
+        chkpt = ".*"
     fp = os.path.abspath(args_cli.run_path)
     run_dirname = os.path.dirname(fp)
     run_folder = os.path.basename(fp)
