@@ -11,7 +11,11 @@ All envs share one track at its world coordinates (env_spacing=0), so
 root_pos_w is directly comparable to the track tensors.
 """
 
+import os
+
 import isaaclab.envs.mdp as mdp
+import isaaclab.sim as sim_utils
+from isaaclab.assets import AssetBaseCfg
 from isaaclab.utils import configclass
 from isaaclab.managers import (
     EventTermCfg as EventTerm,
@@ -20,10 +24,19 @@ from isaaclab.managers import (
     SceneEntityCfg,
 )
 
-from wheeledlab_tasks.drifting.f1tenth_drift_env_cfg import F1TenthDriftEventsRandomCfg
+from wheeledlab_tasks.drifting.f1tenth_drift_env_cfg import (
+    F1TenthDriftEventsRandomCfg, F1TenthDriftSceneCfg,
+)
 from wheeledlab_tasks.drifting.mushr_drift_env_cfg import DriftCurriculumCfg
 from .f1tenth_race_env_cfg import F1TenthRaceRLEnvCfg, RACE_MAX_SPEED
 from . import polytrack
+
+
+def _track_usd_path(track_name: str) -> str:
+    """Path to the visual track.usd for `track_name` (matches polytrack CSVs)."""
+    env_dir = os.environ.get("WHEELEDLAB_TRACKS_DIR")
+    base = env_dir if env_dir else "/workspace/goat_racer_one/tracks/data"
+    return os.path.join(base, track_name, "track.usd")
 
 # Which track to race. Any dir under goat_racer tracks/data/ works.
 # Default = Oval (known-good, F1Tenth-scale). Austin (real F1 ~140x80m) was
@@ -100,6 +113,23 @@ class PolyTrackEventsCfg(F1TenthDriftEventsRandomCfg):
     )
 
 
+###################
+###### SCENE ######
+###################
+
+
+@configclass
+class F1TenthPolyTrackSceneCfg(F1TenthDriftSceneCfg):
+    """F1Tenth scene + visual track mesh (no extra collision, just a visual
+    so the user can SEE the track shape during playback). The polytrack CSVs
+    drive the reward/termination math; this just renders the track surface."""
+
+    track_visual = AssetBaseCfg(
+        prim_path="/World/TrackVisual",
+        spawn=sim_utils.UsdFileCfg(usd_path=_track_usd_path(TRACK)),
+    )
+
+
 ######################
 ###### RL ENV ########
 ######################
@@ -119,6 +149,12 @@ class F1TenthPolyRaceRLEnvCfg(F1TenthRaceRLEnvCfg):
         # Longer episodes — a real lap is longer than the small oval.
         self.episode_length_s = 20
         self.actions.throttle_steer.scale = (POLY_MAX_SPEED, 0.488)
+        # Replace the bare-plane scene with one that includes the visual track
+        # mesh (so the user can SEE the track during playback). Physics still
+        # comes from the centerline tensors in polytrack.py.
+        self.scene = F1TenthPolyTrackSceneCfg(
+            num_envs=self.num_envs, env_spacing=self.env_spacing,
+        )
 
 
 @configclass
